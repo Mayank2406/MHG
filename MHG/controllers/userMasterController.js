@@ -6,7 +6,7 @@ const UserMaster = require('../models/userMaster');
 const master_get = ((req, res) => {
     UserMaster.find()
         .then(result => {
-            res.status(200).json({ message: 'All users are fetched', result: result })
+            res.status(200).json({ message: 'All users are finally fetched', result: result })
         })
         .catch(err => res.status(404).json({ message: err }))
 });
