@@ -9,6 +9,8 @@ router.get('/', userMaster.master_get);
 // Balance api:
 router.get('/:userId/balance',userMaster.balance_get);
 
+// Debit api:
+router.post('/:userId/debit',userMaster.debit)
 
 
 module.exports = router;

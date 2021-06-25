@@ -4,6 +4,11 @@ const UserMaster = require('../models/userMaster');
 const Merchants = require('../models/merchant');
 
 
+// for updating in user_history :
+const userHistory = require('../models/userHistory');
+const UserHistory = require('../models/userHistory');
+ 
+
 // userMaster_get:
 
 const master_get = ((req, res) => {
@@ -108,4 +113,48 @@ const balance_get = (req, res) =>{
 };
 
 
-module.exports = { master_get,balance_get};
+const debit = (req, res) => {
+    const userId  = req.params.userId;
+    const deduct = req.body.points;
+    
+    UserMaster.findOne({user_id:userId})
+    .then(data =>
+        {
+            if(data)  // user found -> update balance after deduction -> save
+            {
+                const new_balance = data.price_point_value-deduct;
+
+                if(deduct>data.price_point_value)
+                {
+                    res.status(203).send("insufficient balance")
+                }
+                else
+                {
+                    UserMaster.updateOne({user_id:userId}, {$set:{price_point_value:new_balance}})
+                    .then( result => res.status(200).json({message:"Balance updated"}) )
+                    .catch(err => console.log(err))
+
+                    const game = new UserHistory(
+                        {
+                            description:req.body.description,
+                            transaction_type:req.body.transaction_type,
+                            source:req.body.source,
+                            user_id:userId,
+                            merchant_id:'102',
+                            order_id:req.body.order_id,
+                            price_point_value:req.body.points,
+                            last_updated_playpoint:new_balance,
+                            user_action:req.body.user_action  
+                        })
+                    game.save()
+                } 
+            }
+            else
+            {
+                res.status(203).json({ messsage:'user not found'});
+            }
+        }) 
+    .catch(err => res.status(404).json({ messsage: err.message || err.toString()}))
+};
+
+module.exports = { master_get,balance_get,debit};
