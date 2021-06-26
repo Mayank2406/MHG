@@ -5,8 +5,11 @@ const Merchants = require('../models/merchant');
 
 
 // for updating in user_history :
-const userHistory = require('../models/userHistory');
 const UserHistory = require('../models/userHistory');
+
+
+// for updating revenue in wallet collection:
+const Wallet = require('../models/wallet');
  
 
 // userMaster_get:
@@ -130,10 +133,17 @@ const debit = (req, res) => {
                 }
                 else
                 {
+                    // 1) deduct the user balance.
+                    // 2) insert payload into user_history.
+                    // 3) increment the merchant revenue(in wallet collection) balance
+
+
+                    // step:1
                     UserMaster.updateOne({user_id:userId}, {$set:{price_point_value:new_balance}})
                     .then( result => res.status(200).json({message:"Balance updated"}) )
                     .catch(err => console.log(err))
 
+                    // step:2
                     const game = new UserHistory(
                         {
                             description:req.body.description,
@@ -147,6 +157,23 @@ const debit = (req, res) => {
                             user_action:req.body.user_action  
                         })
                     game.save()
+
+                    // step:3
+                    Wallet.findOne({mid:'5ef433b23082f88fc54b166b'})
+                    .then(data=>{
+                        console.log(data.price_point_value);
+                        
+                        const updated_balance = data.price_point_value+deduct;
+                        console.log(updated_balance);
+                        Wallet.updateOne({mid:'5ef433b23082f88fc54b166b'},
+                                         {$set:{price_point_value:updated_balance}})
+                        .then(data=>console.log(data.price_point_value))
+                        .catch(err=>console.log(err))
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })        
+
                 } 
             }
             else
