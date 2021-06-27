@@ -35,48 +35,7 @@ const balance_get = (req, res) =>{
     // Step3 : If (present) -----> return the balance.
     // Step4 : If (absent)  -----> Make a new account with given userId and balance 0.
 
-    // step:1 
-
-
-    const mer_id = req.headers.merchant_id;         //encoded
-    const decodedData = Buffer.from(mer_id, 'base64').toString('ascii') // decoded
-
-
-    // decodedData is something like this: Basic 604f00e19d5b6e44a30cca77:604f00e19d5b6e44a30cca77
-    // extacting mid and mid_secret from it.
-
-    let mid = "", mid_secret = "";
-    let i;
-    for (i = 6; i < decodedData.length; i++) {
-        if (decodedData[i] == ':')
-            break;
-        mid += decodedData[i];
-    }
-
-    for (let j = i + 1; j < decodedData.length; j++) {
-        mid_secret += decodedData[j];
-    }
-
-    // console.log(decodedData);
-
-     // check if mer_id constains Basic or not:
-     const basic = decodedData.includes('Basic');
-
-     // if mid is not provided.
-     if (!mer_id) return res.status(404).send('No Token');
-
-     
-
-
-     // search in database if mid exist or not 
-    // if it exists then execute step(2,3,4)
-
-
-    Merchants.find({ mid: mid, mid_secret: mid_secret }, (err, result) => {
-        if (err) res.status(400).json({ message: 'No such Merchant' });
-        else if (!result.length || basic === false) res.status(403).json({ messsage: 'No such Merchant' })
-        else
-            {
+    // step:1  Done in middleware:
 
     // step: 2,3,4
 
@@ -112,9 +71,6 @@ const balance_get = (req, res) =>{
         })
     .catch(err => res.status(404).json({ messsage: err.message || err.toString()}))
     }
-    })
-};
-
 
 const debit = (req, res) => {
     const userId  = req.params.userId;

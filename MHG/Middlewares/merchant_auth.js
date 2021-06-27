@@ -1,9 +1,27 @@
-const checkLogin = (req, res, next) => {
-    const source = req.body.source;
-    if(source!=='Game')
-        res.json({error:"invalid Game"})
-    else
-        next();
+const Merchants = require('../models/merchant');
+
+const merchantLogin = (req, res, next) => {
+    const mer_id = req.headers.merchant_id;       
+    const decodedData = Buffer.from(mer_id, 'base64').toString('ascii')
+    let mid = "", mid_secret = "";
+    let i;
+    for (i = 6; i < decodedData.length; i++) {
+        if (decodedData[i] == ':')
+            break;
+        mid += decodedData[i];
+    }
+
+    for (let j = i + 1; j < decodedData.length; j++) {
+        mid_secret += decodedData[j];
+    }
+    const basic = decodedData.includes('Basic');
+    if (!mer_id) return res.status(404).send('No Token');
+
+    Merchants.find({ mid: mid, mid_secret: mid_secret }, (err, result) => {
+        if (err) res.status(400).json({ message: 'No such Merchant' });
+        else if (!result.length || basic === false) res.status(403).json({ messsage: 'No such Merchant' })
+        else    next();
+    })
 }
 
-module.exports = checkLogin;
+module.exports = {merchantLogin}
