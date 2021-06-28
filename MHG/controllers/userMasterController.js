@@ -208,25 +208,41 @@ const credit = (req, res) => {
                                         { $set: { price_point_value: updated_balance } })
                                         .then()
                                         .catch(err => console.log(err))
-                                })
+                                }).then(data =>
+                                     {
+                                          // step:2
+                                        const game = new UserHistory(
+                                            {
+                                                description: req.body.description,
+                                                transaction_type: req.body.transaction_type,
+                                                source: req.body.source,
+                                                user_id: userId,
+                                                merchant_id: mid,
+                                                order_id: req.body.order_id,
+                                                price_point_value: req.body.points,
+                                                last_updated_playpoint: updated_balance,
+                                                user_action: req.body.user_action
+                                            })
+                                        game.save();
+                                     })
                                 .catch(err => {
                                     console.log(err);
                                 })
                         
                              // step:2
-                             const game = new UserHistory(
-                                {
-                                    description: req.body.description,
-                                    transaction_type: req.body.transaction_type,
-                                    source: req.body.source,
-                                    user_id: userId,
-                                    merchant_id: mid,
-                                    order_id: req.body.order_id,
-                                    price_point_value: req.body.points,
-                                    last_updated_playpoint: updated_balance,
-                                    user_action: req.body.user_action
-                                })
-                            game.save();
+                            //  const game = new UserHistory(
+                            //     {
+                            //         description: req.body.description,
+                            //         transaction_type: req.body.transaction_type,
+                            //         source: req.body.source,
+                            //         user_id: userId,
+                            //         merchant_id: mid,
+                            //         order_id: req.body.order_id,
+                            //         price_point_value: req.body.points,
+                            //         last_updated_playpoint: updated_balance,
+                            //         user_action: req.body.user_action
+                            //     })
+                            // game.save();
                         }
                     }
                     else {
