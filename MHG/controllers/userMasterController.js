@@ -27,6 +27,8 @@ const master_get = ((req, res) => {
 
 const balance_get = (req, res) =>{
     
+    // The mid is returned from merchant_auth and gets stored here.
+    const mid = req.ex;
     // console.log(req.headers.merchant_id);
     const userId = req.params.userId
     console.log(userId);
@@ -73,6 +75,8 @@ const balance_get = (req, res) =>{
     }
 
 const debit = (req, res) => {
+    
+    const mid = req.ex;
     const userId  = req.params.userId;
     const deduct = req.body.points;
     
@@ -106,7 +110,7 @@ const debit = (req, res) => {
                             transaction_type:req.body.transaction_type,
                             source:req.body.source,
                             user_id:userId,
-                            merchant_id:'102',
+                            merchant_id:mid,
                             order_id:req.body.order_id,
                             price_point_value:req.body.points,
                             last_updated_playpoint:new_balance,
@@ -115,13 +119,13 @@ const debit = (req, res) => {
                     game.save()
 
                     // step:3
-                    Wallet.findOne({mid:'5ef433b23082f88fc54b166b'})
+                    Wallet.findOne({mid:mid})
                     .then(data=>{
                         console.log(data.price_point_value);
                         
                         const updated_balance = data.price_point_value+deduct;
                         console.log(updated_balance);
-                        Wallet.updateOne({mid:'5ef433b23082f88fc54b166b'},
+                        Wallet.updateOne({mid:mid},
                                          {$set:{price_point_value:updated_balance}})
                         .then(data=>console.log(data.price_point_value))
                         .catch(err=>console.log(err))

@@ -1,7 +1,9 @@
 const Merchants = require('../models/merchant');
 
 const merchantLogin = (req, res, next) => {
-    const mer_id = req.headers.merchant_id;       
+    const mer_id = req.headers.merchant_id;     
+    if (!mer_id) return res.status(404).send('No Token Provided');
+
     const decodedData = Buffer.from(mer_id, 'base64').toString('ascii')
     let mid = "", mid_secret = "";
     let i;
@@ -15,7 +17,7 @@ const merchantLogin = (req, res, next) => {
         mid_secret += decodedData[j];
     }
     const basic = decodedData.includes('Basic');
-    if (!mer_id) return res.status(404).send('No Token');
+    req.ex = mid;
 
     Merchants.find({ mid: mid, mid_secret: mid_secret }, (err, result) => {
         if (err) res.status(400).json({ message: 'No such Merchant' });
