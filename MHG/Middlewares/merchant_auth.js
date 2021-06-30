@@ -1,4 +1,6 @@
 const Merchants = require('../models/merchant');
+const UserMaster = require('../models/userMaster');
+const userMaster = require('../models/userMaster');
 
 const merchantLogin = (req, res, next) => {
     const mer_id = req.headers.merchant_id;     
@@ -26,4 +28,13 @@ const merchantLogin = (req, res, next) => {
     })
 }
 
-module.exports = {merchantLogin}
+const userPresent = (req,res,next) =>{
+    const userId = req.params.userId;
+    UserMaster.find({ user_id: userId },(err, result) =>{
+        if(err) res.status(400).json({ messsage:err.message || err.toString()});
+        else if (!result.length) res.status(403).json({ messsage: 'No such User' })
+        else    next();
+    })
+}
+
+module.exports = {merchantLogin,userPresent}
