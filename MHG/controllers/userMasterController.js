@@ -1,6 +1,9 @@
 // For updating balance in UserMaster collection:
 const UserMaster = require('../models/userMaster');
 
+const UserService = require('../services/userMaster')
+
+
 // For mer_id validation:
 const Merchants = require('../models/merchant');
 
@@ -15,63 +18,53 @@ const Wallet = require('../models/wallet');
 
 // userMaster_get:
 
-const master_get = ((req, res) => {
-    UserMaster.find()
-        .then(result => {
-            res.status(200).json({ message: 'All users are finally fetched', result: result })
-        })
-        .catch(err => res.status(404).json({ message: err }))
-});
-
+const master_get = async (req,res) => {
+    try
+    {
+        const users = await UserService.getUsers();
+        if(users)
+            return res.status(200).json({ status:200,message:'All users are fetched', data: users });
+        else    
+            return res.status(404).json({ status:404,message:"Can't Fetch Users"})
+    }
+    catch(e)
+    {
+        return res.status(400).json({ status:400,message:e.message})
+    }
+}
 
 // balance_get:
 
-const balance_get = (req, res) => {
-
-    // The mid is returned from merchant_auth and gets stored here.
-    const mid = req.ex;
-    // console.log(req.headers.merchant_id);
+const balance_get = async(req, res) => {
+    const mid = req.ex;                 // The mid is returned from merchant_auth and gets stored here.
     const userId = req.params.userId
-    console.log(userId);
+
     // Step1 : Authenticate the merchant_id:
     // Step2 : Check if the userId is present in the db.
     // Step3 : If (present) -----> return the balance.
     // Step4 : If (absent)  -----> Make a new account with given userId and balance 0.
-
-    // step:1  Done in middleware:
-
-    // step: 2,3,4
-
-    UserMaster.findOne({ user_id: userId })
-        .then(user => {
-            if (user)
-                res.status(200).json
-                    ({
+    try
+    {
+        const userBalance = await UserService.getuserBalance(userId, mid);
+        console.log('in the try block');
+        console.log(userBalance)
+        return res.status(200)
+                  .json({
                         code: 2001,
                         messsage: 'success',
                         status: 'SUCCESS',
-                        balance: user.price_point_value
-                    })
-            else {
-                const user = new UserMaster({
-                    user_id: userId,
-                    merchant_id: mid,
-                    price_point_value: 0
-                })
-                user.save()
-                    .then(user => {
-                        res.status(200).json
-                            ({
-                                code: 2001,
-                                messsage: 'success',
-                                status: 'SUCCESS',
-                                balance: user.price_point_value
-                            })
-                    })
-                    .catch(err => { res.status(404).json({ err: err.message }) })
-            }
-        })
-        .catch(err => res.status(404).json({ messsage: err.message || err.toString() }))
+                        balance: userBalance
+                        })
+    }
+    catch
+    {
+        return res.status(404)
+                  .json({
+                    code: 404,
+                    messsage: 'Fail',
+                    status: 'Fail',
+                        })
+    }
 }
 
 
