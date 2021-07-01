@@ -18,24 +18,22 @@ const Wallet = require('../models/wallet');
 
 // userMaster_get:
 
-const master_get = async (req,res) => {
-    try
-    {
+const master_get = async (req, res) => {
+    try {
         const users = await UserService.getUsers();
-        if(users)
-            return res.status(200).json({ status:200,message:'All users are fetched', data: users });
-        else    
-            return res.status(404).json({ status:404,message:"Can't Fetch Users"})
+        if (users)
+            return res.status(200).json({ status: 200, message: 'All users are fetched', data: users });
+        else
+            return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
     }
-    catch(e)
-    {
-        return res.status(400).json({ status:400,message:e.message})
+    catch (e) {
+        return res.status(400).json({ status: 400, message: e.message })
     }
 }
 
 // balance_get:
 
-const balance_get = async(req, res) => {
+const balance_get = async (req, res) => {
     const mid = req.ex;                 // The mid is returned from merchant_auth and gets stored here.
     const userId = req.params.userId
 
@@ -43,61 +41,56 @@ const balance_get = async(req, res) => {
     // Step2 : Check if the userId is present in the db.
     // Step3 : If (present) -----> return the balance.
     // Step4 : If (absent)  -----> Make a new account with given userId and balance 0.
-    try
-    {
+    try {
         const userBalance = await UserService.getuserBalance(userId, mid);
         return res.status(200)
-                  .json({
-                        code: 2001,
-                        messsage: 'success',
-                        status: 'SUCCESS',
-                        balance: userBalance
-                        })
+            .json({
+                code: 2001,
+                messsage: 'success',
+                status: 'SUCCESS',
+                balance: userBalance
+            })
     }
     catch
     {
         return res.status(404)
-                  .json({
-                    code: 404,
-                    messsage: 'Fail',
-                    status: 'Fail',
-                        })
+            .json({
+                code: 404,
+                messsage: 'Fail',
+                status: 'Fail',
+            })
     }
 }
 
 const debit = async (req, res) => {
     const UserId = req.params.userId;
-    const mid = req.ex;    
+    const mid = req.ex;
     const query = req.body;
 
-    try
-    {
-        const result = await UserService.getDebit({UserId,mid,query});
-        if(result)
-            {
-                return res.status(200)
+    try {
+        const result = await UserService.getDebit({ UserId, mid, query });
+        if (result) {
+            return res.status(200)
                 .json({
-                    code:2001,
-                    message:'SUCCESS',
-                    status:'SUCCESS'
+                    code: 2001,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS'
                 })
-            }
-            else
-            {
-                return res.status(400)
+        }
+        else {
+            return res.status(400)
                 .json({
-                    message:'Some error occurred'
+                    message: 'Some error occurred'
                 })
-            }
+        }
     }
-    catch(err)
-    {
+    catch (err) {
         return res.status(404)
-                  .json({
-                    code: 404,
-                    messsage: 'Fail',
-                    status: 'Fail',
-                        })
+            .json({
+                code: 404,
+                messsage: 'Fail',
+                status: 'Fail',
+            })
     }
 };
 
@@ -105,8 +98,8 @@ const debit = async (req, res) => {
 // Credit Api:
 
 const credit = (req, res) => {
-     // check if order id is present or not:
-     checkOrderId(req.body.order_id, function (result) {
+    // check if order id is present or not:
+    checkOrderId(req.body.order_id, function (result) {
         if (result)
             return res.status(202).json({ message: 'Order id already present' });
         else {
@@ -114,7 +107,7 @@ const credit = (req, res) => {
             const userId = req.params.userId;
             const deduct = req.body.points;
 
-            Wallet.findOne({ mid: mid})
+            Wallet.findOne({ mid: mid })
                 .then(data => {
                     if (data)  // Merchant found -> update balance after deduction -> save
                     {
@@ -136,38 +129,37 @@ const credit = (req, res) => {
 
                             var updated_balance;
                             // step:3
-                             UserMaster.findOne({ user_id: userId })
+                            UserMaster.findOne({ user_id: userId })
                                 .then(data => {
                                     // console.log(data.price_point_value);
 
                                     updated_balance = data.price_point_value + deduct;
                                     // console.log(updated_balance);
-                                    UserMaster.updateOne({user_id: userId },
+                                    UserMaster.updateOne({ user_id: userId },
                                         { $set: { price_point_value: updated_balance } })
                                         .then()
                                         .catch(err => console.log(err))
-                                }).then(data =>
-                                     {
-                                          // step:2
-                                        const game = new UserHistory(
-                                            {
-                                                description: req.body.description,
-                                                transaction_type: req.body.transaction_type,
-                                                source: req.body.source,
-                                                user_id: userId,
-                                                merchant_id: mid,
-                                                order_id: req.body.order_id,
-                                                price_point_value: req.body.points,
-                                                last_updated_playpoint: updated_balance,
-                                                user_action: req.body.user_action
-                                            })
-                                        game.save();
-                                     })
+                                }).then(data => {
+                                    // step:2
+                                    const game = new UserHistory(
+                                        {
+                                            description: req.body.description,
+                                            transaction_type: req.body.transaction_type,
+                                            source: req.body.source,
+                                            user_id: userId,
+                                            merchant_id: mid,
+                                            order_id: req.body.order_id,
+                                            price_point_value: req.body.points,
+                                            last_updated_playpoint: updated_balance,
+                                            user_action: req.body.user_action
+                                        })
+                                    game.save();
+                                })
                                 .catch(err => {
                                     console.log(err);
                                 })
-                        
-                             // step:2
+
+                            // step:2
                             //  const game = new UserHistory(
                             //     {
                             //         description: req.body.description,
@@ -190,7 +182,7 @@ const credit = (req, res) => {
                 .catch(err => res.status(404).json({ messsage: err.message || err.toString() }))
         }
     });
- }
+}
 
 
 

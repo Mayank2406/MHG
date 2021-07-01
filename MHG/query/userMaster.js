@@ -2,47 +2,45 @@ const UserMaster = require('../models/userMaster');
 const Wallet = require('../models/wallet');
 const UserHistory = require('../models/userHistory');
 
-const findUser = () =>{
-    try
-    {
+const findUser = () => {
+    try {
         return UserMaster.find()
     }
-    catch(e)
-    {
+    catch (e) {
         return null;
     }
 }
 
 const findOneUser = (userId) => {
-    const User =  UserMaster.findOne({ user_id: userId })
+    const User = UserMaster.findOne({ user_id: userId })
     return User;
 }
 
-const findOneMerchant  = (mid) => {
-    const Merchant = Wallet.findOne({mid:mid})
+const findOneMerchant = (mid) => {
+    const Merchant = Wallet.findOne({ mid: mid })
     return Merchant;
 }
 
 const findOneOrder = (orderId) => {
-    const Order = UserHistory.findOne({order_id: orderId})
+    const Order = UserHistory.findOne({ order_id: orderId })
     return Order;
 }
 
-const findUserandUpdate = ({UserId,new_balance}) => {
+const findUserandUpdate = ({ UserId, new_balance }) => {
     UserMaster.updateOne({ user_id: UserId }, { $set: { price_point_value: new_balance } })
-    .then()
-    .catch(err=> console.log('cant update user'))
+        .then()
+        .catch(err => console.log('cant update user'))
 }
 
-const findMerchantandUpdate = ({mid,updated_balance}) => {
+const findMerchantandUpdate = ({ mid, updated_balance }) => {
     Wallet.updateOne({ mid: mid },
         { $set: { price_point_value: updated_balance } })
-    .then()
-    .catch(err=> console.log('cant update merchant'))
+        .then()
+        .catch(err => console.log('cant update merchant'))
 }
 
 // New User For Balance
-const newUser = (query)=>{
+const newUser = (query) => {
     const user = new UserMaster({
         user_id: query.userId,
         merchant_id: query.mid,
@@ -53,7 +51,7 @@ const newUser = (query)=>{
 }
 
 // New Transaction in UserHistory
-const updateUserHistory = ({UserId, mid,new_balance,query})=>{
+const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
     const game = new UserHistory(
         {
             description: query.description,
@@ -71,7 +69,7 @@ const updateUserHistory = ({UserId, mid,new_balance,query})=>{
 }
 
 module.exports = {
-                    findUser,findOneUser,findOneMerchant,
-                    findOneOrder,findUserandUpdate,newUser, 
-                    findMerchantandUpdate,updateUserHistory
-                 }
+    findUser, findOneUser, findOneMerchant,
+    findOneOrder, findUserandUpdate, newUser,
+    findMerchantandUpdate, updateUserHistory
+}
