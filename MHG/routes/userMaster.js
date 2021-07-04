@@ -15,6 +15,6 @@ router.get('/:userId/balance', checkLogin.merchantLogin, userMaster.balance_get)
 router.post('/:userId/debit', checkLogin.merchantLogin, userMaster.debit);
 
 // Credit api:
-router.post('/:userId/credit', checkLogin.merchantLogin, checkLogin.userPresent, userMaster.credit);
+router.post('/:userId/credit', checkLogin.merchantLogin,userMaster.credit);
 
 module.exports = router;
