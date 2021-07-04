@@ -98,14 +98,14 @@ const debit = async (req, res) => {
 
 // Credit Api:
 
-const credit = async(req, res) => {
+const credit = async (req, res) => {
 
     const UserId = req.params.userId;
-    const mid    = req.ex;
-    const query  = req.body;
-    
+    const mid = req.ex;
+    const query = req.body;
+
     try {
-        const result = await UserService.getCredit({UserId, mid, query});
+        const result = await UserService.getCredit({ UserId, mid, query });
         if (result) {
             return res.status(200)
                 .json({
@@ -121,14 +121,13 @@ const credit = async(req, res) => {
                 })
         }
     }
-    catch(err) 
-    {
+    catch (err) {
         return res.status(err.code)
-        .json({
-            code: err.code,
-            messsage: err.message,
-            status: err.status
-        })
+            .json({
+                code: err.code,
+                messsage: err.message,
+                status: err.status
+            })
     }
 };
 
