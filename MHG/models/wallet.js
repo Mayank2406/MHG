@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const WalletSchema = new Schema({
     mid:String,
+    wallet_type:String,
     price_point_value:Number
 },{timestamps: true});
 

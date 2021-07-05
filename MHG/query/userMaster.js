@@ -1,6 +1,7 @@
 const UserMaster = require('../models/userMaster');
 const Wallet = require('../models/wallet');
 const UserHistory = require('../models/userHistory');
+const WalletHistory = require('../models/walletHistory');
 
 const findUser = () => {
     try {
@@ -21,6 +22,11 @@ const findOneMerchant = (mid) => {
     return Merchant;
 }
 
+const findOneSpecialMerchant = (mid,wallet_type) => {
+    const Merchant = Wallet.findOne({ mid: mid, wallet_type: wallet_type})
+    return Merchant;
+}
+
 const findOneOrder = (orderId) => {
     const Order = UserHistory.findOne({ order_id: orderId })
     return Order;
@@ -32,8 +38,8 @@ const findUserandUpdate = ({ UserId, new_balance }) => {
         .catch(err => console.log('cant update user'))
 }
 
-const findMerchantandUpdate = ({ mid, updated_balance }) => {
-    Wallet.updateOne({ mid: mid },
+const findMerchantandUpdate = ({ mid, updated_balance,wallet_type}) => {
+    Wallet.updateOne({ mid: mid, wallet_type: wallet_type},
         { $set: { price_point_value: updated_balance } })
         .then()
         .catch(err => console.log('cant update merchant'))
@@ -71,5 +77,5 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
 module.exports = {
     findUser, findOneUser, findOneMerchant,
     findOneOrder, findUserandUpdate, newUser,
-    findMerchantandUpdate, updateUserHistory
+    findMerchantandUpdate, updateUserHistory,findOneSpecialMerchant
 }

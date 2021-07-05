@@ -26,6 +26,7 @@ const getDebit = async ({ UserId, mid, query }) => {
     const merchant = await UserQuery.findOneMerchant(mid);
     const order = await UserQuery.findOneOrder(query.order_id);
     const deduct = query.points;
+    const user_action =  query.user_action.toLowerCase();
 
     if (order) {
         throw ({ code: 404, message: 'Order Id already exists', status: 'Fail' });
@@ -39,9 +40,18 @@ const getDebit = async ({ UserId, mid, query }) => {
 
             const newTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
 
-            const updated_balance = merchant.price_point_value + deduct;
-            UserQuery.findMerchantandUpdate({ mid, updated_balance });
+            var wallet_type;
 
+            if(user_action==='win')
+                wallet_type = 'REVENUE';
+            else    
+                wallet_type = 'ESCROW';
+
+            const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
+            const updated_balance =  special_merchant.price_point_value + deduct;
+
+            UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
+    
             return user;
         }
         else
@@ -69,7 +79,9 @@ const getCredit = async ({ UserId, mid, query }) => {
 
         if (deduct <= merchant.price_point_value) {
             const updated_balance = merchant.price_point_value - deduct;
-            UserQuery.findMerchantandUpdate({ mid, updated_balance });
+
+            const wallet_type = 'BUDGET';
+            UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
 
             const new_balance = user.price_point_value + deduct;
             await UserQuery.findUserandUpdate({ UserId, new_balance });
