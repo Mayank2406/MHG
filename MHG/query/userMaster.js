@@ -74,8 +74,30 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
     return game;
 }
 
+
+// New Transaction in MerchantHistory
+
+const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance, query}) => {
+    const game = new WalletHistory(
+        {
+            description: query.description,
+            transaction_type: query.transaction_type,
+            source: query.source,
+            user_id: UserId,
+            merchant_id: mid,
+            order_id: query.order_id,
+            wallet_id:wallet_id,
+            price_point_value: query.points,
+            last_updated_playpoint: updated_balance,
+            user_action: query.user_action
+        })
+    game.save()
+    return game;
+}
+
+
 module.exports = {
     findUser, findOneUser, findOneMerchant,
     findOneOrder, findUserandUpdate, newUser,
-    findMerchantandUpdate, updateUserHistory,findOneSpecialMerchant
+    findMerchantandUpdate, updateUserHistory,findOneSpecialMerchant,updateMerchantHistory
 }

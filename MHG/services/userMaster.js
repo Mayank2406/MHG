@@ -27,7 +27,7 @@ const getDebit = async ({ UserId, mid, query }) => {
     const order = await UserQuery.findOneOrder(query.order_id);
     const deduct = query.points;
     const user_action =  query.user_action.toLowerCase();
-
+    
     if (order) {
         throw ({ code: 404, message: 'Order Id already exists', status: 'Fail' });
     }
@@ -38,7 +38,7 @@ const getDebit = async ({ UserId, mid, query }) => {
             const new_balance = user.price_point_value - deduct;
             UserQuery.findUserandUpdate({ UserId, new_balance });
 
-            const newTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
+            const newUserTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
 
             var wallet_type;
 
@@ -48,10 +48,13 @@ const getDebit = async ({ UserId, mid, query }) => {
                 wallet_type = 'ESCROW';
 
             const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
+            const wallet_id =  special_merchant._id;
             const updated_balance =  special_merchant.price_point_value + deduct;
 
             UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
     
+            const newMerchantTransaction = UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
+
             return user;
         }
         else
@@ -80,13 +83,19 @@ const getCredit = async ({ UserId, mid, query }) => {
         if (deduct <= merchant.price_point_value) {
             const updated_balance = merchant.price_point_value - deduct;
 
+            const newMerchantTransaction = await UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
+
             const wallet_type = 'BUDGET';
+            const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
+            const wallet_id = special_merchant._id;
+
+
             UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
 
             const new_balance = user.price_point_value + deduct;
             await UserQuery.findUserandUpdate({ UserId, new_balance });
 
-            const newTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
+            const newUserTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
 
             return user;
         }
