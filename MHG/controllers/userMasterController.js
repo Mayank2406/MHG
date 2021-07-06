@@ -1,20 +1,4 @@
-// For updating balance in UserMaster collection:
-const UserMaster = require('../models/userMaster');
-
 const UserService = require('../services/userMaster')
-
-
-// For mer_id validation:
-const Merchants = require('../models/merchant');
-
-
-// for updating in user_history :
-const UserHistory = require('../models/userHistory');
-
-
-// for updating revenue in wallet collection:
-const Wallet = require('../models/wallet');
-
 
 // userMaster_get:
 
@@ -22,11 +6,39 @@ const master_get = async (req, res) => {
     try {
         const users = await UserService.getUsers();
         if (users)
-            return res.status(200).json({ status: 200, message: 'All users are fetched', data: users });
+            return res.status(200).json({length:users.length, status: 200, message: 'All users are fetched', data: users });
         else
             return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
     }
     catch (e) {
+        return res.status(400).json({ status: 400, message: e.message })
+    }
+}
+
+// rank_get: 
+const rank_get = async (req,res) => {
+    const userId = req.params.userId
+    try{
+        const users = await UserService.getUserRank(userId);
+        if(users)
+        {
+            var currentUserRank={};
+            for(let i=0;i<users.length;i++)
+                {
+                    if(users[i].user_id===userId)
+                    {
+                        currentUserRank.user_id = userId,
+                        currentUserRank.rank    = users[i].rank,
+                        currentUserRank.points  = users[i].points
+                    }
+                }
+            if(users.length>10) users.pop();
+            return res.status(200).json({length:users.length, status: 200, message: 'All users are fetched', data: users,currentUserRank });    
+        }
+        else
+        return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
+    }
+    catch(e){
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
@@ -131,4 +143,4 @@ const credit = async (req, res) => {
     }
 };
 
-module.exports = { master_get, balance_get, debit, credit };
+module.exports = { master_get, balance_get,rank_get, debit, credit };

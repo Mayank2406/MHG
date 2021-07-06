@@ -17,4 +17,7 @@ router.post('/:userId/debit', checkLogin.merchantLogin, userMaster.debit);
 // Credit api:
 router.post('/:userId/credit', checkLogin.merchantLogin, userMaster.credit);
 
+// Rank api:
+router.get('/:userId/rank',userMaster.rank_get);
+
 module.exports = router;

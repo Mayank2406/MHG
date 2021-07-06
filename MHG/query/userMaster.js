@@ -5,7 +5,7 @@ const WalletHistory = require('../models/walletHistory');
 
 const findUser = () => {
     try {
-        return UserMaster.find()
+        return UserMaster.find().sort({'price_point_value':-1})
     }
     catch (e) {
         return null;

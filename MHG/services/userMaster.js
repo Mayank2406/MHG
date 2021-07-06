@@ -5,6 +5,34 @@ const getUsers = async () => {
     return users;
 }
 
+const getUserRank = async(userId) => {
+    const users = await UserQuery.findUser();
+    // users contains list of all users sorted by price_point_value in decreasing order:
+    
+    const ranks = [];
+    for(let i = 0; i < users.length; i++) 
+    {
+        if(i<10)
+        {
+            ranks.push({
+                user_id : users[i].user_id,
+                points  : users[i].price_point_value,
+                rank    : i+1
+            })   
+        }
+        if(users[i].user_id===userId && i>10)
+        {   
+            ranks.push({
+                user_id : users[i].user_id,
+                points  : users[i].price_point_value,
+                rank    : i+1
+            })   
+        }
+    }
+    
+    return ranks;
+}
+
 const getuserBalance = async (userId, mid) => {
     const userBalance = await UserQuery.findOneUser(userId);
     if (userBalance) {
@@ -106,4 +134,4 @@ const getCredit = async ({ UserId, mid, query }) => {
         throw ({ code: 404, message: 'User not found', status: 'Fail' });
 }
 
-module.exports = { getUsers, getuserBalance, getDebit, getCredit }
+module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit }
