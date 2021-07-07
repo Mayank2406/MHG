@@ -12,8 +12,12 @@ const findUser = () => {
     }
 }
 
-const findOrders = ()=> {
-    return UserHistory.find().sort({'createdAt':-1}).limit(10);
+const findTotalOrders = (userId) => {
+    return UserHistory.find({user_id: userId}).sort({'createdAt':-1});
+}
+
+const findOrders = (userId)=> {
+    return UserHistory.find({user_id: userId}).sort({'createdAt':-1}).limit(10);
 }
 
 const findOneUser = (userId) => {
@@ -104,5 +108,5 @@ module.exports = {
     findUser, findOneUser, findOneMerchant,
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
-    findOneSpecialMerchant,updateMerchantHistory,findOrders
+    findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders
 }

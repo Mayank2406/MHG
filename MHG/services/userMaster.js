@@ -139,4 +139,9 @@ const getOrders = async(userId)=> {
     return orders;
 }
 
-module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit,getOrders}
+const getTotalOrders = async(userId)=> {
+    const orders = await UserQuery.findTotalOrders(userId);
+    return orders;
+}
+
+module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit,getOrders,getTotalOrders}
