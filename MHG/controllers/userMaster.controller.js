@@ -1,4 +1,4 @@
-const UserService = require('../services/userMaster')
+const UserService = require('../services/userMaster.service')
 
 // userMaster_get:
 

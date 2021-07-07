@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const merchantRoutes = require('../controllers/MerchantController')
+const merchantRoutes = require('../controllers/Merchant.controller')
 
 
 // GET:

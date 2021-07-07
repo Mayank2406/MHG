@@ -1,4 +1,4 @@
-const UserQuery = require('../query/userMaster')
+const UserQuery = require('../query/userMaster.query')
 
 const getUsers = async () => {
     const users = await UserQuery.findUser();

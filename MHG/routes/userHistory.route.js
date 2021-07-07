@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const userHistoryRoutes = require('../controllers/UserHistoryController');
+const userHistoryRoutes = require('../controllers/UserHistory.controller');
 
 
 // GET Route:

@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const merchantRoutes = require('./routes/merchant');
-const userHistoryRoutes = require('./routes/userHistory');
-const walletRoutes = require('./routes/walletroute');
-const userMasterRoutes = require('./routes/userMaster');
+const merchantRoutes = require('./routes/merchant.route');
+const userHistoryRoutes = require('./routes/userHistory.route');
+const walletRoutes = require('./routes/wallet.route');
+const userMasterRoutes = require('./routes/userMaster.route');
 
 const port = 3000;
 const app = express();

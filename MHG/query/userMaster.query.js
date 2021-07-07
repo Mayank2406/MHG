@@ -1,7 +1,7 @@
-const UserMaster = require('../models/userMaster');
-const Wallet = require('../models/wallet');
-const UserHistory = require('../models/userHistory');
-const WalletHistory = require('../models/walletHistory');
+const UserMaster = require('../models/userMaster.model');
+const Wallet = require('../models/wallet.model');
+const UserHistory = require('../models/userHistory.model');
+const WalletHistory = require('../models/walletHistory.model');
 
 const findUser = () => {
     try {

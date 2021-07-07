@@ -1,4 +1,4 @@
-const Merchants = require('../models/merchant');
+const Merchants = require('../models/merchant.model');
 // blog_get  blog_post
 
 

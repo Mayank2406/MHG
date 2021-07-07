@@ -1,4 +1,4 @@
-const userHistory = require('../models/userHistory');
+const userHistory = require('../models/userHistory.model');
 
 const user_get = (req, res) => {
     userHistory.find()

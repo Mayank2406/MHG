@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const userMaster = require('../controllers/userMasterController');
+const userMaster = require('../controllers/userMaster.controller');
 const checkLogin = require('../Middlewares/merchant_auth')
 
 

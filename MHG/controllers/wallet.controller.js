@@ -1,6 +1,6 @@
 // importing wallet model:
 
-const Wallet = require('../models/wallet');
+const Wallet = require('../models/wallet.model');
 
 
 // wallet_get:
