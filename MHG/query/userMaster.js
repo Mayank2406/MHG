@@ -12,6 +12,10 @@ const findUser = () => {
     }
 }
 
+const findOrders = ()=> {
+    return UserHistory.find().sort({'createdAt':-1}).limit(10);
+}
+
 const findOneUser = (userId) => {
     const User = UserMaster.findOne({ user_id: userId })
     return User;
@@ -99,5 +103,6 @@ const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance, query}) =
 module.exports = {
     findUser, findOneUser, findOneMerchant,
     findOneOrder, findUserandUpdate, newUser,
-    findMerchantandUpdate, updateUserHistory,findOneSpecialMerchant,updateMerchantHistory
+    findMerchantandUpdate, updateUserHistory,
+    findOneSpecialMerchant,updateMerchantHistory,findOrders
 }

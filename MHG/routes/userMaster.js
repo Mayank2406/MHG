@@ -20,4 +20,8 @@ router.post('/:userId/credit', checkLogin.merchantLogin, userMaster.credit);
 // Rank api:
 router.get('/:userId/rank',userMaster.rank_get);
 
+// Order_History api:
+router.get('/:userId/order',userMaster.order_get);
+
+
 module.exports = router;

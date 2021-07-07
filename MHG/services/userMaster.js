@@ -134,4 +134,9 @@ const getCredit = async ({ UserId, mid, query }) => {
         throw ({ code: 404, message: 'User not found', status: 'Fail' });
 }
 
-module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit }
+const getOrders = async(userId)=> {
+    const orders = await UserQuery.findOrders(userId);
+    return orders;
+}
+
+module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit,getOrders}

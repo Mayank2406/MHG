@@ -6,7 +6,7 @@ const master_get = async (req, res) => {
     try {
         const users = await UserService.getUsers();
         if (users)
-            return res.status(200).json({length:users.length, status: 200, message: 'All users are fetched', data: users });
+            return res.status(200).json({ length: users.length, status: 200, message: 'All users are fetched', data: users });
         else
             return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
     }
@@ -16,29 +16,26 @@ const master_get = async (req, res) => {
 }
 
 // rank_get: 
-const rank_get = async (req,res) => {
+const rank_get = async (req, res) => {
     const userId = req.params.userId
-    try{
+    try {
         const users = await UserService.getUserRank(userId);
-        if(users)
-        {
-            var currentUserRank={};
-            for(let i=0;i<users.length;i++)
-                {
-                    if(users[i].user_id===userId)
-                    {
-                        currentUserRank.user_id = userId,
-                        currentUserRank.rank    = users[i].rank,
-                        currentUserRank.points  = users[i].points
-                    }
+        if (users) {
+            var currentUserRank = {};
+            for (let i = 0; i < users.length; i++) {
+                if (users[i].user_id === userId) {
+                    currentUserRank.user_id = userId,
+                        currentUserRank.rank = users[i].rank,
+                        currentUserRank.points = users[i].points
                 }
-            if(users.length>10) users.pop();
-            return res.status(200).json({length:users.length, status: 200, message: 'All users are fetched', data: users,currentUserRank });    
+            }
+            if (users.length > 10) users.pop();
+            return res.status(200).json({ length: users.length, status: 200, message: 'All users are fetched', data: users, currentUserRank });
         }
         else
-        return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
+            return res.status(404).json({ status: 404, message: "Can't Fetch Users" })
     }
-    catch(e){
+    catch (e) {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
@@ -143,4 +140,19 @@ const credit = async (req, res) => {
     }
 };
 
-module.exports = { master_get, balance_get,rank_get, debit, credit };
+// Transaction which occured w.r.t particular user_id:
+const order_get = async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const orders = await UserService.getOrders(userId);
+        if (orders)
+            return res.status(200).json({ length: orders.length, status: 200, message: 'All orders are fetched', data: orders });
+        else
+            return res.status(404).json({ status: 404, message: "Can't Fetch Orders" })
+    }
+    catch (e) {
+        return res.status(400).json({ status: 400, message: e.message })
+    }
+}
+
+module.exports = { master_get, balance_get, rank_get, debit, credit, order_get };
