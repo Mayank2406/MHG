@@ -24,4 +24,6 @@ router.get('/:userId/rank',userMaster.rank_get);
 router.get('/:userId/order',userMaster.order_get);
 
 
+
+
 module.exports = router;

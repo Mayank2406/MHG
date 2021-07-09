@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const userHistory_Schema = new Schema({
     description:String,                     // Debit: Played ,  Credit:Won 
-    trasaction_type:String,                 // Debit or Credit
+    transaction_type:String,                 // Debit or Credit
     source:String,                          // Game/app
     user_id:String,                     
     merchant_id:String,

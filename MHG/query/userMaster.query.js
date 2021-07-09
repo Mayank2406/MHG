@@ -83,6 +83,8 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
 }
 
 
+
+
 // New Transaction in MerchantHistory
 
 const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance, query}) => {

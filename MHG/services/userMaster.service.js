@@ -110,18 +110,17 @@ const getCredit = async ({ UserId, mid, query }) => {
 
         if (deduct <= merchant.price_point_value) {
             const updated_balance = merchant.price_point_value - deduct;
-
-            const newMerchantTransaction = await UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
-
+                
             const wallet_type = 'BUDGET';
             const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
             const wallet_id = special_merchant._id;
-
+            
+            const newMerchantTransaction = await UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
 
             UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
 
             const new_balance = user.price_point_value + deduct;
-            await UserQuery.findUserandUpdate({ UserId, new_balance });
+            UserQuery.findUserandUpdate({ UserId, new_balance });
 
             const newUserTransaction = await UserQuery.updateUserHistory({ UserId, mid, new_balance, query })
 
