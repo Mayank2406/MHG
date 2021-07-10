@@ -40,6 +40,44 @@ const findOneOrder = (orderId) => {
     return Order;
 }
 
+const findCoinsSummary = (mid) => {
+    const agg = [
+        {
+            '$project': {
+                'mid': '$merchant_id',
+                'transaction_type': {
+                    '$toLower': '$transaction_type'
+                },
+                'item': {
+                    '$toLower': '$source'
+                },
+                'price': '$price_point_value'
+            }
+        }, {
+            '$match': {
+                'item': {
+                    '$in': [
+                        'game', 'app'
+                    ]
+                },
+                'mid': mid
+            }
+        }, {
+            '$group': {
+                '_id': {
+                    'Type': '$transaction_type',
+                    'src': '$item'
+                },
+                'result': {
+                    '$sum': '$price'
+                }
+            }
+        }
+    ];
+    const coinsSummary =  WalletHistory.aggregate(agg);
+    return coinsSummary;
+}
+
 const findUserandUpdate = ({ UserId, new_balance }) => {
     UserMaster.updateOne({ user_id: UserId }, { $set: { price_point_value: new_balance } })
         .then()
@@ -110,5 +148,6 @@ module.exports = {
     findUser, findOneUser, findOneMerchant,
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
-    findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders
+    findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders,
+    findCoinsSummary
 }

@@ -5,31 +5,28 @@ const getUsers = async () => {
     return users;
 }
 
-const getUserRank = async(userId) => {
+const getUserRank = async (userId) => {
     const users = await UserQuery.findUser();
     // users contains list of all users sorted by price_point_value in decreasing order:
-    
+
     const ranks = [];
-    for(let i = 0; i < users.length; i++) 
-    {
-        if(i<10)
-        {
+    for (let i = 0; i < users.length; i++) {
+        if (i < 10) {
             ranks.push({
-                user_id : users[i].user_id,
-                points  : users[i].price_point_value,
-                rank    : i+1
-            })   
+                user_id: users[i].user_id,
+                points: users[i].price_point_value,
+                rank: i + 1
+            })
         }
-        if(users[i].user_id===userId && i>10)
-        {   
+        if (users[i].user_id === userId && i > 10) {
             ranks.push({
-                user_id : users[i].user_id,
-                points  : users[i].price_point_value,
-                rank    : i+1
-            })   
+                user_id: users[i].user_id,
+                points: users[i].price_point_value,
+                rank: i + 1
+            })
         }
     }
-    
+
     return ranks;
 }
 
@@ -45,6 +42,35 @@ const getuserBalance = async (userId, mid) => {
     }
 }
 
+const getcoinsSummary = async (mid) => {
+    const coinsSummary = await UserQuery.findCoinsSummary(mid);
+
+    var pointsInfromApp = 0, pointsInfromGame = 0, pointsInfromUser = 0;
+    var pointsOutFromApp = 0, pointsOutFromGame = 0;
+
+    for (let i = 0; i < coinsSummary.length; i++) {
+        const Type = coinsSummary[i]._id.Type;
+        const src = coinsSummary[i]._id.src;
+        const result = coinsSummary[i].result;
+
+        if (Type === 'debit') {
+            if (src === 'app')
+                pointsInfromApp += result;
+            else
+                pointsInfromGame += result;
+        }
+        else {
+            if (src === 'app')
+                pointsOutFromApp += result;
+            else
+                pointsOutFromGame += result;
+        }
+        pointsInfromUser += result;
+    }
+    var result = {pointsInfromApp,pointsInfromGame,pointsOutFromApp,pointsOutFromGame,pointsInfromUser};
+    return result;
+}
+
 const getDebit = async ({ UserId, mid, query }) => {
     // check if user exist in userMaster.
     // check if merchant exist in wallet.
@@ -54,8 +80,8 @@ const getDebit = async ({ UserId, mid, query }) => {
     const merchant = await UserQuery.findOneMerchant(mid);
     const order = await UserQuery.findOneOrder(query.order_id);
     const deduct = query.points;
-    const user_action =  query.user_action.toLowerCase();
-    
+    const user_action = query.user_action.toLowerCase();
+
     if (order) {
         throw ({ code: 404, message: 'Order Id already exists', status: 'Fail' });
     }
@@ -70,18 +96,18 @@ const getDebit = async ({ UserId, mid, query }) => {
 
             var wallet_type;
 
-            if(user_action==='win')
+            if (user_action === 'win')
                 wallet_type = 'REVENUE';
-            else    
+            else
                 wallet_type = 'ESCROW';
 
-            const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
-            const wallet_id =  special_merchant._id;
-            const updated_balance =  special_merchant.price_point_value + deduct;
+            const special_merchant = await UserQuery.findOneSpecialMerchant(mid, wallet_type);
+            const wallet_id = special_merchant._id;
+            const updated_balance = special_merchant.price_point_value + deduct;
 
-            UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
-    
-            const newMerchantTransaction = UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
+            UserQuery.findMerchantandUpdate({ mid, updated_balance, wallet_type });
+
+            const newMerchantTransaction = UserQuery.updateMerchantHistory({ UserId, mid, wallet_id, updated_balance, query });
 
             return user;
         }
@@ -110,14 +136,14 @@ const getCredit = async ({ UserId, mid, query }) => {
 
         if (deduct <= merchant.price_point_value) {
             const updated_balance = merchant.price_point_value - deduct;
-                
-            const wallet_type = 'BUDGET';
-            const special_merchant = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
-            const wallet_id = special_merchant._id;
-            
-            const newMerchantTransaction = await UserQuery.updateMerchantHistory({UserId, mid,wallet_id,updated_balance,query});
 
-            UserQuery.findMerchantandUpdate({ mid, updated_balance,wallet_type});
+            const wallet_type = 'BUDGET';
+            const special_merchant = await UserQuery.findOneSpecialMerchant(mid, wallet_type);
+            const wallet_id = special_merchant._id;
+
+            const newMerchantTransaction = await UserQuery.updateMerchantHistory({ UserId, mid, wallet_id, updated_balance, query });
+
+            UserQuery.findMerchantandUpdate({ mid, updated_balance, wallet_type });
 
             const new_balance = user.price_point_value + deduct;
             UserQuery.findUserandUpdate({ UserId, new_balance });
@@ -133,14 +159,17 @@ const getCredit = async ({ UserId, mid, query }) => {
         throw ({ code: 404, message: 'User not found', status: 'Fail' });
 }
 
-const getOrders = async(userId)=> {
+const getOrders = async (userId) => {
     const orders = await UserQuery.findOrders(userId);
     return orders;
 }
 
-const getTotalOrders = async(userId)=> {
+const getTotalOrders = async (userId) => {
     const orders = await UserQuery.findTotalOrders(userId);
     return orders;
 }
 
-module.exports = { getUsers, getUserRank,getuserBalance, getDebit, getCredit,getOrders,getTotalOrders}
+module.exports = {
+    getUsers, getUserRank, getuserBalance, getDebit, getCredit, getOrders, getTotalOrders,
+    getcoinsSummary
+}

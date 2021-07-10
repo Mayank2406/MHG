@@ -1,4 +1,5 @@
 const UserService = require('../services/userMaster.service')
+const WalletHistory = require('../models/walletHistory.model');
 
 // userMaster_get:
 
@@ -12,6 +13,38 @@ const master_get = async (req, res) => {
     }
     catch (e) {
         return res.status(400).json({ status: 400, message: e.message })
+    }
+}
+
+// coins_get:
+
+const coins_get = async (req, res) => {
+    const mid = req.ex;
+    try {
+        const Summary = await UserService.getcoinsSummary(mid);
+        if (Summary) {
+            return res.status(200)
+                .json({
+                    code: 2001,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS',
+                    summary:Summary
+                })
+        }
+        else {
+            return res.status(400)
+                .json({
+                    message: 'Some error occurred'
+                })
+        }
+    }
+    catch (err) {
+        return res.status(err.code)
+            .json({
+                code: err.code,
+                messsage: err.message,
+                status: err.status
+            })
     }
 }
 
@@ -156,4 +189,4 @@ const order_get = async (req, res) => {
     }
 }
 
-module.exports = { master_get, balance_get, rank_get, debit, credit, order_get };
+module.exports = { master_get, balance_get, rank_get, debit, credit, order_get, coins_get };
