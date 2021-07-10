@@ -65,8 +65,8 @@ const getcoinsSummary = async (mid) => {
             else
                 pointsOutFromGame += result;
         }
-        pointsInfromUser += result;
     }
+    pointsInfromUser = pointsInfromGame + pointsInfromApp;
     var result = {pointsInfromApp,pointsInfromGame,pointsOutFromApp,pointsOutFromGame,pointsInfromUser};
     return result;
 }
