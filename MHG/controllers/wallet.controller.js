@@ -3,7 +3,6 @@ const WalletService = require('../services/wallet.service');
 
 const merchant_get = async (req, res) => {
     const mid = req.ex;
-    console.log(mid);
     try {
         const Wallets = await WalletService.getMerchantWallets(mid);
         if (Wallets) {
