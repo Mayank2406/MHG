@@ -25,6 +25,11 @@ const findOneUser = (userId) => {
     return User;
 }
 
+const findallMerchant = (mid) => {
+    const allMerchant = Wallet.find({mid: mid});
+    return allMerchant;
+}
+
 const findOneMerchant = (mid) => {
     const Merchant = Wallet.findOne({ mid: mid })
     return Merchant;
@@ -149,5 +154,5 @@ module.exports = {
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
     findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders,
-    findCoinsSummary
+    findCoinsSummary,findallMerchant
 }

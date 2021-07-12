@@ -1,14 +1,34 @@
-// importing wallet model:
-
-const Wallet = require('../models/wallet.model');
+const WalletService = require('../services/wallet.service');
 
 
-// wallet_get:
-
-const wallet_get = (req, res) => {
-    Wallet.find()
-        .then((result) => { res.status(200).json({ message: 'all records fetched', result: result }) })
-        .catch((err) => { res.status(404).json({ message: err }) });
+const merchant_get = async (req, res) => {
+    const mid = req.ex;
+    console.log(mid);
+    try {
+        const Wallets = await WalletService.getMerchantWallets(mid);
+        if (Wallets) {
+            return res.status(200)
+                .json({
+                    code: 2001,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS',
+                    wallets:Wallets
+                })
+        }
+        else {
+            return res.status(400)
+                .json({
+                    message: 'Some error occurred'
+                })
+        }
+    }
+    catch (err) {
+        return res.status(err.code)
+            .json({
+                code: err.code,
+                messsage: err.message,
+                status: err.status
+            })
+    }
 }
-
-module.exports = { wallet_get }
+module.exports = { merchant_get }

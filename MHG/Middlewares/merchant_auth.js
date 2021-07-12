@@ -21,6 +21,8 @@ const merchantLogin = (req, res, next) => {
     const basic = decodedData.includes('Basic');
     req.ex = mid;
 
+    // console.log(mid);
+
     Merchants.find({ mid: mid, mid_secret: mid_secret }, (err, result) => {
         if (err) res.status(400).json({ message: 'No such Merchant' });
         else if (!result.length || basic === false) res.status(403).json({ messsage: 'No such Merchant' })
