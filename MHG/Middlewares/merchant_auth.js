@@ -1,6 +1,5 @@
 const Merchants = require('../models/merchant.model');
 const UserMaster = require('../models/userMaster.model');
-const userMaster = require('../models/userMaster.model');
 
 const merchantLogin = (req, res, next) => {
     const mer_id = req.headers.merchant_id;     
