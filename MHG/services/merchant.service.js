@@ -49,4 +49,27 @@ const settleWallet = async ({ wallet_type, query, mid }) => {
 }
 
 
-module.exports = { settleWallet }
+const getcoinsSummary = async (mid) => {
+    const coinsSummary = await UserQuery.findCoinsSummary(mid);
+    const Transaction  = await UserQuery.firstandlastTransaction(mid);
+
+    var pointsfromUser = 0, pointstoUser = 0;
+    var openingBalance = Transaction[0].price;
+    var closingBalance = Transaction[Transaction.length-1].price;
+
+    for (let i = 0; i < coinsSummary.length; i++) {
+        const Type = coinsSummary[i]._id.Type;
+        const result = coinsSummary[i].result;
+
+        if (Type === 'debit') {
+           pointsfromUser += result;
+        }
+        else {
+           pointstoUser += result;
+        }
+    }
+    var result = {pointsfromUser,pointstoUser,openingBalance,closingBalance};
+    return result;
+}
+
+module.exports = { settleWallet,getcoinsSummary }

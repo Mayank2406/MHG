@@ -6,7 +6,7 @@ const settlement = async (req, res) => {
     const query = req.body;
     const mid = req.ex;
     try {
-        const settlement = await MerchantService.settleWallet({ wallet_type,query,mid });
+        const settlement = await MerchantService.settleWallet({ wallet_type, query, mid });
         if (settlement) {
             return res.status(200)
                 .json({
@@ -32,4 +32,34 @@ const settlement = async (req, res) => {
     }
 }
 
-module.exports = { settlement}
+const getTransactionSummary = async (req, res) => {
+    const mid = req.ex;
+    try {
+        const Summary = await MerchantService.getcoinsSummary(mid);
+        if (Summary) {
+            return res.status(200)
+                .json({
+                    code: 2001,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS',
+                    summary: Summary
+                })
+        }
+        else {
+            return res.status(400)
+                .json({
+                    message: 'Some error occurred'
+                })
+        }
+    }
+    catch (err) {
+        return res.status(err.code)
+            .json({
+                code: err.code,
+                messsage: err.message,
+                status: err.status
+            })
+    }
+}
+
+module.exports = { settlement, getTransactionSummary }

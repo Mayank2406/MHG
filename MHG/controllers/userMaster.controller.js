@@ -48,6 +48,7 @@ const coins_get = async (req, res) => {
     }
 }
 
+
 // rank_get: 
 const rank_get = async (req, res) => {
     const userId = req.params.userId
@@ -189,4 +190,4 @@ const order_get = async (req, res) => {
     }
 }
 
-module.exports = { master_get, balance_get, rank_get, debit, credit, order_get, coins_get };
+module.exports = { master_get, balance_get, rank_get, debit, credit, order_get, coins_get};

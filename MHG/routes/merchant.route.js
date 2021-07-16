@@ -9,4 +9,6 @@ const merchantController = require('../controllers/Merchant.controller')
 
 router.post('/settle/:wallet_type',checkLogin.merchantLogin,merchantController.settlement);
 
+router.get('/transactionSummary',checkLogin.merchantLogin,merchantController.getTransactionSummary)
+
 module.exports = router;

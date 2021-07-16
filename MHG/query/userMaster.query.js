@@ -83,6 +83,42 @@ const findCoinsSummary = (mid) => {
     return coinsSummary;
 }
 
+const firstandlastTransaction = (mid) => {
+    const agg = [
+        {
+          '$project': {
+            'mid': '$merchant_id', 
+            'transaction_type': {
+              '$toLower': '$transaction_type'
+            }, 
+            'item': {
+              '$toLower': '$source'
+            }, 
+            'date': '$createdAt', 
+            'price': '$price_point_value'
+          }
+        }, {
+          '$match': {
+            'item': {
+              '$in': [
+                'game', 'app'
+              ]
+            }, 
+            'mid': mid, 
+            'transaction_type': 'credit'
+          }
+        }, {
+          '$sort': {
+            'date': 1
+          }
+        }
+      ];
+
+      const transaction = WalletHistory.aggregate(agg);
+      return transaction;
+}
+
+
 const findUserandUpdate = ({ UserId, new_balance }) => {
     UserMaster.updateOne({ user_id: UserId }, { $set: { price_point_value: new_balance } })
         .then()
@@ -126,8 +162,6 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
 }
 
 
-
-
 // New Transaction in MerchantHistory
 
 const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance,query}) => {
@@ -154,5 +188,5 @@ module.exports = {
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
     findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders,
-    findCoinsSummary,findallMerchant
+    findCoinsSummary,findallMerchant, firstandlastTransaction
 }
