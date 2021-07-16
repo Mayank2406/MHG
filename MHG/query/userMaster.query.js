@@ -130,7 +130,7 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
 
 // New Transaction in MerchantHistory
 
-const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance, query}) => {
+const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance,query}) => {
     const game = new WalletHistory(
         {
             description: query.description,

@@ -7,7 +7,6 @@ const merchantController = require('../controllers/Merchant.controller')
 //   /merchants/settle/escrow ->  Escrow to Revenue -> transaction in wallet History Table.
 //   /merchants/settle/revene ->  Revenue to Budget -> transaction in wallet History Table.
 
-router.post('/settle/escrow',checkLogin.merchantLogin,merchantController.settleEscrow);
-router.post('/settle/revenue',checkLogin.merchantLogin,merchantController.settleRevenue);
+router.post('/settle/:wallet_type',checkLogin.merchantLogin,merchantController.settlement);
 
 module.exports = router;
