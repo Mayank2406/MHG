@@ -159,9 +159,25 @@ const getCredit = async ({ UserId, mid, query }) => {
         throw ({ code: 404, message: 'User not found', status: 'Fail' });
 }
 
-const getOrders = async (userId) => {
-    const orders = await UserQuery.findOrders(userId);
-    return orders;
+const getOrders = async ({total_orders,userId,page,limit}) => {
+
+    if(!page)  page = 1;       // Default page value:
+    if(!limit || limit>10) limit = 10;     // Default limit value:
+
+    let no_of_pages = Math.ceil(total_orders.length /limit)
+    if(page>no_of_pages)    page = no_of_pages;
+    
+    const startIndex =  (page-1) * limit;
+    const result = {};
+    
+    try{
+        result.maxResults = limit; 
+        result.results = await UserQuery.findOrders({userId,limit,startIndex});
+        return result;
+    }
+    catch(err){
+        throw ({ code: 404, message: 'Orders not found', status: 'Fail' });   
+    }
 }
 
 const getTotalOrders = async (userId) => {

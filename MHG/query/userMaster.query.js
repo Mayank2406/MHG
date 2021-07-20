@@ -16,8 +16,8 @@ const findTotalOrders = (userId) => {
     return UserHistory.find({user_id: userId}).sort({'createdAt':-1});
 }
 
-const findOrders = (userId)=> {
-    return UserHistory.find({user_id: userId}).sort({'createdAt':-1}).limit(10);
+const findOrders = ({userId,limit,startIndex})=> {
+    return UserHistory.find({user_id: userId}).sort({'createdAt':-1}).limit(limit).skip(startIndex);
 }
 
 const findOneUser = (userId) => {

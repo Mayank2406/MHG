@@ -177,11 +177,14 @@ const credit = async (req, res) => {
 // Transaction which occured w.r.t particular user_id:
 const order_get = async (req, res) => {
     const userId = req.params.userId;
+    let page   = parseInt(req.query.page); 
+    let limit  = parseInt(req.query.limit);
+
     try {
         const total_orders = await UserService.getTotalOrders(userId);
-        const orders = await UserService.getOrders(userId);
+        const orders = await UserService.getOrders({total_orders,userId,page,limit});
         if (orders)
-            return res.status(200).json({ length: total_orders.length, status: 200, message: 'All orders are fetched', data: orders });
+            return res.status(200).json({ Total_Orders: total_orders.length, status: 200, message: 'All orders are fetched', Orders: orders });
         else
             return res.status(404).json({ status: 404, message: "Can't Fetch Orders" })
     }
