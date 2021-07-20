@@ -72,4 +72,30 @@ const getcoinsSummary = async (mid) => {
     return result;
 }
 
-module.exports = { settleWallet,getcoinsSummary }
+const getallOrders = async (mid) => {
+    const orders = await UserQuery.getallOrders(mid);
+    return orders;
+}
+
+const getHistoryPoints = async ({Total_Orders,mid,page,limit}) => {
+    if(!page)  page = 1;       // Default page value:
+    if(!limit || limit>10) limit = 10;     // Default limit value:
+
+    let no_of_pages = Math.ceil(Total_Orders.length /limit)
+    if(page>no_of_pages)    page = no_of_pages;
+    
+    const startIndex =  (page-1) * limit;
+    const result = {};
+
+    try{
+        result.maxResults = limit;
+        result.results = await UserQuery.findMerchantOrders({mid,limit,startIndex});
+        return result;
+    }
+    catch{
+        throw ({ code: 404, message: 'Orders not found', status: 'Fail' }); 
+    }
+}
+
+
+module.exports = { settleWallet,getcoinsSummary,getallOrders,getHistoryPoints}

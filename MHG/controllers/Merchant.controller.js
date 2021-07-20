@@ -62,4 +62,37 @@ const getTransactionSummary = async (req, res) => {
     }
 }
 
-module.exports = { settlement, getTransactionSummary }
+const getHistoryPoints = async (req, res) => {
+    let page   = parseInt(req.query.page); 
+    let limit  = parseInt(req.query.limit);
+    const mid = req.ex;
+    try {
+        const Total_Orders = await MerchantService.getallOrders(mid);
+        const HistoryPoints = await MerchantService.getHistoryPoints({Total_Orders,mid,page,limit});
+        if (HistoryPoints) {
+            return res.status(200)
+                .json({
+                    code: 2001,
+                    total_orders:Total_Orders.length,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS',
+                    summary: HistoryPoints
+                })
+        }
+        else {
+            return res.status(400)
+                .json({
+                    message: 'Some error occurred'
+                })
+        }
+    }
+    catch (err) {
+        return res.status(400)
+            .json({
+                code: 400,
+                messsage: err.message,
+            })
+    }
+}
+
+module.exports = { settlement, getTransactionSummary, getHistoryPoints}

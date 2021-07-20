@@ -20,7 +20,8 @@ router.post('/:userId/credit', checkLogin.merchantLogin, userMaster.credit);
 // Rank api:
 router.get('/:userId/rank',userMaster.rank_get);
 
-// Order_History api:
+// Order_History api: This is wrt to user. 
+// There is also 1 more API History Points that is same as this api but it is wrt merchant.
 router.get('/:userId/order',userMaster.order_get);
 
 // coins summary api: 
