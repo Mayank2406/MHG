@@ -28,6 +28,6 @@ router.get('/:userId/order',userMaster.order_get);
 router.get('/coins',checkLogin.merchantLogin,userMaster.coins_get);
 
 // checkOrder api: Check if the order exists or not:
-router.get('/checkOrder/:orderId',userMaster.checkOrder);
+router.get('/:orderId/checkOrder',userMaster.checkOrder);
 
 module.exports = router;

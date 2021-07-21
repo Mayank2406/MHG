@@ -12,4 +12,7 @@ const checkLogin = require('../Middlewares/merchant_auth')
 // We have to basically find these 3 wallets information.
 router.get('/merchant',checkLogin.merchantLogin,walletController.merchant_get);
 
+// creditBudget: 
+router.post('/:walletId/credit',checkLogin.merchantLogin,walletController.creditBudget)
+
 module.exports = router;

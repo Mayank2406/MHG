@@ -11,7 +11,7 @@ const merchant_get = async (req, res) => {
                     code: 2001,
                     message: 'SUCCESS',
                     status: 'SUCCESS',
-                    wallets:Wallets
+                    wallets: Wallets
                 })
         }
         else {
@@ -30,4 +30,33 @@ const merchant_get = async (req, res) => {
             })
     }
 }
-module.exports = { merchant_get }
+
+const creditBudget = async (req, res) => {
+    const mid = req.ex;
+    const walletId = req.params.walletId;
+    const points   = req.body.points;
+
+    try {
+        const Wallet = await WalletService.creditBudget({mid,points,walletId});
+        if (Wallet) {
+            return res.status(200)
+                .json({
+                    code: 2001,
+                    message: 'SUCCESS',
+                    status: 'SUCCESS',
+                    wallets: Wallet
+                })
+        }
+        else {
+            return res.status(400)
+                .json({
+                    message: 'Some error occurred'
+                })
+        }
+    }
+    catch (e) {
+        return res.status(400).json({ status: 400, message: e.message })   
+    }
+}
+
+module.exports = { merchant_get, creditBudget }
