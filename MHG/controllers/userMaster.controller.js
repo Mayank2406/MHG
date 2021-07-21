@@ -28,7 +28,7 @@ const coins_get = async (req, res) => {
                     code: 2001,
                     message: 'SUCCESS',
                     status: 'SUCCESS',
-                    summary:Summary
+                    summary: Summary
                 })
         }
         else {
@@ -177,12 +177,12 @@ const credit = async (req, res) => {
 // Transaction which occured w.r.t particular user_id:
 const order_get = async (req, res) => {
     const userId = req.params.userId;
-    let page   = parseInt(req.query.page); 
-    let limit  = parseInt(req.query.limit);
+    let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.limit);
 
     try {
         const total_orders = await UserService.getTotalOrders(userId);
-        const orders = await UserService.getOrders({total_orders,userId,page,limit});
+        const orders = await UserService.getOrders({ total_orders, userId, page, limit });
         if (orders)
             return res.status(200).json({ Total_Orders: total_orders.length, status: 200, message: 'All orders are fetched', Orders: orders });
         else
@@ -193,4 +193,20 @@ const order_get = async (req, res) => {
     }
 }
 
-module.exports = { master_get, balance_get, rank_get, debit, credit, order_get, coins_get};
+const checkOrder = async (req, res) => {
+    const orderId = req.params.orderId;
+    try {
+        const order = await UserService.checkOrder(orderId);
+        if (order) {
+            return res.status(200).json({ code: 200, status: 'Success', message: 'Order already exist' })
+        }
+        else{
+            return res.status(200).json({ code: 200, status: 'Success', message: 'Order does not exist' })
+        }
+    }
+    catch (e) {
+        return res.status(400).json({ status: 400, message: e.message })
+    }
+}
+
+module.exports = { master_get, balance_get, rank_get, debit, credit, order_get, coins_get, checkOrder };

@@ -9,6 +9,12 @@ const userMasterRoutes = require('./routes/userMaster.route');
 const port = 3000;
 const app = express();
 
+const EventEmitter = require('events');
+class MyEmitter extends EventEmitter{}
+const myEmitter = new MyEmitter();
+myEmitter.setMaxListeners(15);
+myEmitter.emit('event');
+
 
 const dbURL = "mongodb+srv://m2406:whJaqTam7AwRUut@cluster0.9gkt2.mongodb.net/MHJ";
 mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })

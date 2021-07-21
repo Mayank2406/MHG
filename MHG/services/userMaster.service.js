@@ -185,7 +185,12 @@ const getTotalOrders = async (userId) => {
     return orders;
 }
 
+const checkOrder = async (orderId) => {
+    const order = await UserQuery.findOneOrder(orderId);
+    return order;
+}
+
 module.exports = {
     getUsers, getUserRank, getuserBalance, getDebit, getCredit, getOrders, getTotalOrders,
-    getcoinsSummary
+    getcoinsSummary, checkOrder
 }
