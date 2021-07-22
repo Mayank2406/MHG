@@ -26,11 +26,19 @@ const findOneUser = (userId) => {
 }
 
 const getallOrders = (mid) => {
-    return UserHistory.find({mid: mid});
+    return UserHistory.find({merchant_id: mid});
 }
 
 const findMerchantOrders = ({mid,limit,startIndex}) => {
-    return UserHistory.find({mid: mid}).sort({'createdAt':-1}).limit(limit).skip(startIndex);
+    return UserHistory.find({merchant_id: mid}).sort({'createdAt':-1}).limit(limit).skip(startIndex);
+}
+
+const getallWalletOrders = (mid)=>{
+    return WalletHistory.find({merchant_id: mid});
+}
+
+const findWalletMerchantOrders = ({mid,limit,startIndex}) => {
+    return WalletHistory.find({merchant_id: mid}).sort({'createdAt':-1}).limit(limit).skip(startIndex);
 }
 
 const findallMerchant = (mid) => {
@@ -196,5 +204,6 @@ module.exports = {
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
     findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders,
-    findCoinsSummary,findallMerchant, firstandlastTransaction, findMerchantOrders, getallOrders
+    findCoinsSummary,findallMerchant, firstandlastTransaction, findMerchantOrders, getallOrders, 
+    getallWalletOrders,findWalletMerchantOrders
 }

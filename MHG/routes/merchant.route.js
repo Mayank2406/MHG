@@ -11,6 +11,10 @@ router.post('/settle/:wallet_type',checkLogin.merchantLogin,merchantController.s
 
 router.get('/transactionSummary',checkLogin.merchantLogin,merchantController.getTransactionSummary)
 
-router.get('/historyPoints',merchantController.getHistoryPoints)
+// This is from UserHistory Collection/Table 
+router.get('/historyPoints',checkLogin.merchantLogin,merchantController.getHistoryPoints)
+
+// This is from WalletHistory Collection/Table
+router.get('/walletHistoryPoints',checkLogin.merchantLogin,merchantController.getWalletHistoryPoints)
 
 module.exports = router;
