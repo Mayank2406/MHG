@@ -25,7 +25,7 @@ router.get('/:userId/:merchantId/rank',userMaster.rank_get);
 router.get('/:userId/order',userMaster.order_get);
 
 // coins summary api: 
-router.get('/coins',checkLogin.merchantLogin,userMaster.coins_get);
+router.get('/:merchantId/coins',checkLogin.merchantLogin,userMaster.coins_get);
 
 // checkOrder api: Check if the order exists or not:
 router.get('/:orderId/checkOrder',userMaster.checkOrder);

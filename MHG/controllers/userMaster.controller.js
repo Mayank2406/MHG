@@ -18,7 +18,7 @@ const master_get = async (req, res) => {
 // coins_get:
 
 const coins_get = async (req, res) => {
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     try {
         const Summary = await UserService.getcoinsSummary(mid);
         if (Summary) {
