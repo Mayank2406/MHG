@@ -182,7 +182,8 @@ const updateUserHistory = ({ UserId, mid, new_balance, query }) => {
             order_id: query.order_id,
             price_point_value: query.points,
             last_updated_playpoint: new_balance,
-            user_action: query.user_action
+            user_action: query.user_action,
+            product_info: query.productInfo,
         })
     game.save()
     return game;
@@ -203,7 +204,8 @@ const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance,query}) =>
             wallet_id:wallet_id,
             price_point_value: query.points,
             last_updated_playpoint: updated_balance,
-            user_action: query.user_action
+            user_action: query.user_action,
+            product_info: query.productInfo,
         })
     game.save()
     return game;

@@ -11,6 +11,14 @@ const userHistory_Schema = new Schema({
     price_point_value:Number,               // Debit or Credit amount
     last_updated_playpoint:Number,          // Actual Balance
     user_action:String,                     // Debit: Play,  Credit:Win
+    product_info:{
+        id:Number, 
+        product_name:String, 
+        product_type:String, 
+        claim_point:Number, 
+        price:Number,
+        discount_percentage:Number
+    }
 },{timestamps: true});
 
 
