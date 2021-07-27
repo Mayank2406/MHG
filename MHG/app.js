@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const merchantRoutes = require('./routes/merchant.route');
-const userHistoryRoutes = require('./routes/userHistory.route');
 const walletRoutes = require('./routes/wallet.route');
 const userMasterRoutes = require('./routes/userMaster.route');
 
@@ -27,6 +26,5 @@ mongoose.set('useFindAndModify', false);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/merchants', merchantRoutes);
-app.use('/users', userHistoryRoutes);
 app.use('/wallets', walletRoutes);
 app.use('/masters', userMasterRoutes);

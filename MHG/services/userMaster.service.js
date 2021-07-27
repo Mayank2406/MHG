@@ -5,8 +5,26 @@ const getUsers = async () => {
     return users;
 }
 
-const getUserRank = async (userId) => {
-    const users = await UserQuery.findUser();
+const getUserRank = async (mid, userId) => {
+
+    // check if merchant exists or not in merchant collection:
+    const Merchant = await UserQuery.findMerchant(mid);
+    if (!Merchant) {
+        throw ({ code: 404, message: 'Merchant does not exists', status: 'Fail' });
+    }
+
+    const user = await UserQuery.findOneUser(userId)
+    const merchant_id = user.merchant_id;
+    if(!user || (merchant_id!==mid)){
+        throw ({ code: 404, message: 'User does not exists', status: 'Fail' });
+    }
+
+    const merchant = await UserQuery.findOneMerchantfromUserMaster(mid);
+    if(!merchant){
+        throw ({ code: 404, message: 'Merchant does not exists', status: 'Fail' });
+    }
+
+    const users = await UserQuery.findUser(mid);
     // users contains list of all users sorted by price_point_value in decreasing order:
 
     const ranks = [];
@@ -31,8 +49,15 @@ const getUserRank = async (userId) => {
 }
 
 const getuserBalance = async (userId, mid) => {
+
+    const merchant = await UserQuery.findMerchant(mid);
+    if (!merchant) {
+        throw ({ code: 404, message: 'Merchant does not exists', status: 'Fail' });
+    }
+
     const userBalance = await UserQuery.findOneUser(userId);
-    if (userBalance) {
+    const Merchant = await UserQuery.findOneMerchantfromUserMaster(mid);
+    if (userBalance && Merchant) {
         return userBalance.price_point_value;
     }
     else {
@@ -67,11 +92,18 @@ const getcoinsSummary = async (mid) => {
         }
     }
     pointsInfromUser = pointsInfromGame + pointsInfromApp;
-    var result = {pointsInfromApp,pointsInfromGame,pointsOutFromApp,pointsOutFromGame,pointsInfromUser};
+    var result = { pointsInfromApp, pointsInfromGame, pointsOutFromApp, pointsOutFromGame, pointsInfromUser };
     return result;
 }
 
 const getDebit = async ({ UserId, mid, query }) => {
+
+    // check if merchant exists or not in merchant collection:
+    const Merchant = await UserQuery.findMerchant(mid);
+    if (!Merchant) {
+        throw ({ code: 404, message: 'Merchant does not exists', status: 'Fail' });
+    }
+
     // check if user exist in userMaster.
     // check if merchant exist in wallet.
     // check if order_id is unique.
@@ -79,7 +111,7 @@ const getDebit = async ({ UserId, mid, query }) => {
     const user = await UserQuery.findOneUser(UserId)
     const merchant = await UserQuery.findOneMerchant(mid);
     const order = await UserQuery.findOneOrder(query.order_id);
-    const deduct = query.points;
+    const deduct = parseInt(query.points);
     const user_action = query.user_action.toLowerCase();
 
     if (order) {
@@ -87,7 +119,7 @@ const getDebit = async ({ UserId, mid, query }) => {
     }
 
     // Valid Condition:
-    if (user && merchant && !order) {
+    if (user && merchant) {
         if (deduct <= user.price_point_value) {
             const new_balance = user.price_point_value - deduct;
             UserQuery.findUserandUpdate({ UserId, new_balance });
@@ -120,10 +152,21 @@ const getDebit = async ({ UserId, mid, query }) => {
 
 
 const getCredit = async ({ UserId, mid, query }) => {
+
+    // check if merchant exists or not in merchant collection:
+    const Merchant = await UserQuery.findMerchant(mid);
+    if (!Merchant) {
+        throw ({ code: 404, message: 'Merchant does not exists', status: 'Fail' });
+    }
+
     const user = await UserQuery.findOneUser(UserId)
     const merchant = await UserQuery.findOneMerchant(mid);
     const order = await UserQuery.findOneOrder(query.order_id);
-    const deduct = query.points;
+    const deduct = parseInt(query.points);
+
+    if (typeof (deduct) != 'number') {
+        throw ({ code: 404, message: 'Points to deduct is not a number', status: 'Fail' });
+    }
 
     if (order) {
         throw ({ code: 404, message: 'Order Id already exists', status: 'Fail' });
@@ -131,7 +174,7 @@ const getCredit = async ({ UserId, mid, query }) => {
 
     // Valid Condition:
 
-    if (user && merchant && !order) {
+    if (user && merchant) {
         // Merchant found -> update balance after deduction -> save
 
         if (deduct <= merchant.price_point_value) {
@@ -159,24 +202,24 @@ const getCredit = async ({ UserId, mid, query }) => {
         throw ({ code: 404, message: 'User not found', status: 'Fail' });
 }
 
-const getOrders = async ({total_orders,userId,page,limit}) => {
+const getOrders = async ({ total_orders, userId, page, limit }) => {
 
-    if(!page)  page = 1;       // Default page value:
-    if(!limit || limit>10) limit = 10;     // Default limit value:
+    if (!page) page = 1;       // Default page value:
+    if (!limit || limit > 10) limit = 10;     // Default limit value:
 
-    let no_of_pages = Math.ceil(total_orders.length /limit)
-    if(page>no_of_pages)    page = no_of_pages;
-    
-    const startIndex =  (page-1) * limit;
+    let no_of_pages = Math.ceil(total_orders.length / limit)
+    if (page > no_of_pages) page = no_of_pages;
+
+    const startIndex = (page - 1) * limit;
     const result = {};
-    
-    try{
-        result.maxResults = limit; 
-        result.results = await UserQuery.findOrders({userId,limit,startIndex});
+
+    try {
+        result.maxResults = limit;
+        result.results = await UserQuery.findOrders({ userId, limit, startIndex });
         return result;
     }
-    catch(err){
-        throw ({ code: 404, message: 'Orders not found', status: 'Fail' });   
+    catch (err) {
+        throw ({ code: 404, message: 'Orders not found', status: 'Fail' });
     }
 }
 

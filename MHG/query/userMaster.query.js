@@ -1,11 +1,12 @@
+const Merchants = require('../models/merchant.model');
 const UserMaster = require('../models/userMaster.model');
 const Wallet = require('../models/wallet.model');
 const UserHistory = require('../models/userHistory.model');
 const WalletHistory = require('../models/walletHistory.model');
 
-const findUser = () => {
+const findUser = (mid) => {
     try {
-        return UserMaster.find().sort({'price_point_value':-1})
+        return UserMaster.find({merchant_id:mid}).sort({'price_point_value':-1})
     }
     catch (e) {
         return null;
@@ -23,6 +24,16 @@ const findOrders = ({userId,limit,startIndex})=> {
 const findOneUser = (userId) => {
     const User = UserMaster.findOne({ user_id: userId })
     return User;
+}
+
+const findMerchant = (mid) => {
+    const Merchant = Merchants.findOne({mid: mid})
+    return Merchant;
+}
+
+const findOneMerchantfromUserMaster = (mid)=>{
+    const Merchant = UserMaster.findOne({ merchant_id: mid})
+    return Merchant;
 }
 
 const getallOrders = (mid) => {
@@ -200,10 +211,10 @@ const updateMerchantHistory = ({UserId, mid,wallet_id,updated_balance,query}) =>
 
 
 module.exports = {
-    findUser, findOneUser, findOneMerchant,
+    findUser, findOneUser, findOneMerchant, findMerchant,
     findOneOrder, findUserandUpdate, newUser,
     findMerchantandUpdate, updateUserHistory,
     findOneSpecialMerchant,updateMerchantHistory,findOrders,findTotalOrders,
     findCoinsSummary,findallMerchant, firstandlastTransaction, findMerchantOrders, getallOrders, 
-    getallWalletOrders,findWalletMerchantOrders
+    getallWalletOrders,findWalletMerchantOrders, findOneMerchantfromUserMaster
 }

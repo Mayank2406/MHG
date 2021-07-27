@@ -1,5 +1,4 @@
 const UserService = require('../services/userMaster.service')
-const WalletHistory = require('../models/walletHistory.model');
 
 // userMaster_get:
 
@@ -51,9 +50,10 @@ const coins_get = async (req, res) => {
 
 // rank_get: 
 const rank_get = async (req, res) => {
+    const mid = req.params.merchantId
     const userId = req.params.userId
     try {
-        const users = await UserService.getUserRank(userId);
+        const users = await UserService.getUserRank(mid,userId);
         if (users) {
             var currentUserRank = {};
             for (let i = 0; i < users.length; i++) {
@@ -77,7 +77,7 @@ const rank_get = async (req, res) => {
 // balance_get:
 
 const balance_get = async (req, res) => {
-    const mid = req.ex;                 // The mid is returned from merchant_auth and gets stored here.
+    const mid = req.params.merchantId;                 // The mid is returned from merchant_auth and gets stored here.
     const userId = req.params.userId
 
     // Step1 : Authenticate the merchant_id:
@@ -94,13 +94,13 @@ const balance_get = async (req, res) => {
                 balance: userBalance
             })
     }
-    catch
+    catch(err)
     {
         return res.status(404)
             .json({
-                code: 404,
-                messsage: 'Fail',
-                status: 'Fail',
+                code: err.code,
+                messsage: err.message,
+                status: err.status,
             })
     }
 }
@@ -108,7 +108,7 @@ const balance_get = async (req, res) => {
 // Debit Api:
 const debit = async (req, res) => {
     const UserId = req.params.userId;
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     const query = req.body;
 
     try {
@@ -144,7 +144,7 @@ const debit = async (req, res) => {
 const credit = async (req, res) => {
 
     const UserId = req.params.userId;
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     const query = req.body;
 
     try {
@@ -192,6 +192,8 @@ const order_get = async (req, res) => {
         return res.status(400).json({ status: 400, message: e.message })
     }
 }
+
+// Check if order exist or not
 
 const checkOrder = async (req, res) => {
     const orderId = req.params.orderId;
