@@ -7,14 +7,14 @@ const merchantController = require('../controllers/Merchant.controller')
 //   /merchants/settle/escrow ->  Escrow to Revenue -> transaction in wallet History Table.
 //   /merchants/settle/revene ->  Revenue to Budget -> transaction in wallet History Table.
 
-router.post('/settle/:wallet_type',checkLogin.merchantLogin,merchantController.settlement);
+router.post('/settle/:merchantId/:wallet_type',checkLogin.merchantLogin,merchantController.settlement);
 
-router.get('/transactionSummary',checkLogin.merchantLogin,merchantController.getTransactionSummary)
+router.get('/:merchantId/transactionSummary',checkLogin.merchantLogin,merchantController.getTransactionSummary)
 
 // This is from UserHistory Collection/Table 
-router.get('/historyPoints',checkLogin.merchantLogin,merchantController.getHistoryPoints)
+router.get('/:merchantId/historyPoints',checkLogin.merchantLogin,merchantController.getHistoryPoints)
 
 // This is from WalletHistory Collection/Table
-router.get('/walletHistoryPoints',checkLogin.merchantLogin,merchantController.getWalletHistoryPoints)
+router.get('/:merchantId/walletHistoryPoints',checkLogin.merchantLogin,merchantController.getWalletHistoryPoints)
 
 module.exports = router;

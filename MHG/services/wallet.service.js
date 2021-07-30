@@ -11,7 +11,7 @@ const getMerchantWallets = async(mid) => {
     return Wallets;
 }
 
-const creditBudget = async ({mid,points,walletId}) => {
+const creditBudget = async ({mid,points}) => {
     const wallet_type = 'BUDGET';
     const Wallet = await UserQuery.findOneSpecialMerchant(mid,wallet_type);
     const updated_balance = Wallet.price_point_value + points;

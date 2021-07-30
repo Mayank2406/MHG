@@ -5,7 +5,7 @@ const settleWallet = async ({ wallet_type, query, mid }) => {
     const Revenue = await UserQuery.findOneSpecialMerchant(mid, 'REVENUE');
     const Budget  = await UserQuery.findOneSpecialMerchant(mid, 'BUDGET');
     const Wallet =  wallet_type.toUpperCase();
-    const deduct = query.points;
+    const deduct = parseInt(query.points); 
     
     var add_to_wallet,deduct_from_wallet,addtoWallet;
     if (Wallet === 'ESCROW')

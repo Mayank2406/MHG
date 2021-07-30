@@ -32,12 +32,11 @@ const merchant_get = async (req, res) => {
 }
 
 const creditBudget = async (req, res) => {
-    const mid = req.ex;
-    const walletId = req.params.walletId;
+    const mid = req.params.merchantId;
     const points   = req.body.points;
 
     try {
-        const Wallet = await WalletService.creditBudget({mid,points,walletId});
+        const Wallet = await WalletService.creditBudget({mid,points});
         if (Wallet) {
             return res.status(200)
                 .json({

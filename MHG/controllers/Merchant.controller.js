@@ -4,7 +4,7 @@ const MerchantService = require('../services/merchant.service');
 const settlement = async (req, res) => {
     const wallet_type = req.params.wallet_type;
     const query = req.body;
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     try {
         const settlement = await MerchantService.settleWallet({ wallet_type, query, mid });
         if (settlement) {
@@ -33,7 +33,7 @@ const settlement = async (req, res) => {
 }
 
 const getTransactionSummary = async (req, res) => {
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     try {
         const Summary = await MerchantService.getcoinsSummary(mid);
         if (Summary) {
@@ -65,7 +65,7 @@ const getTransactionSummary = async (req, res) => {
 const getHistoryPoints = async (req, res) => {
     let page   = parseInt(req.query.page); 
     let limit  = parseInt(req.query.limit);
-    const mid = req.ex;
+    const mid =  req.params.merchantId;
     try {
         const Total_Orders = await MerchantService.getallOrders(mid);
         const HistoryPoints = await MerchantService.getHistoryPoints({Total_Orders,mid,page,limit});
@@ -98,7 +98,7 @@ const getHistoryPoints = async (req, res) => {
 const getWalletHistoryPoints = async (req, res) => {
     let page   = parseInt(req.query.page); 
     let limit  = parseInt(req.query.limit);
-    const mid = req.ex;
+    const mid = req.params.merchantId;
     try {
         const Total_Orders = await MerchantService.getallWalletOrders(mid);
         const HistoryPoints = await MerchantService.getWalletHistoryPoints({Total_Orders,mid,page,limit});
