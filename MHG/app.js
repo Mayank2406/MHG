@@ -1,12 +1,17 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const config  = require('./config/config'); 
+const mongodb = require('./config/databaseConnection')
+
+
+// const mongoose = require('mongoose');
 
 const merchantRoutes = require('./routes/merchant.route');
 const walletRoutes = require('./routes/wallet.route');
 const userMasterRoutes = require('./routes/userMaster.route');
 
-const port = 3000;
+const port = config.app.port;
 const app = express();
+
 
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter{}
@@ -15,12 +20,11 @@ myEmitter.setMaxListeners(15);
 myEmitter.emit('event');
 
 
-const dbURL = "mongodb+srv://m2406:whJaqTam7AwRUut@cluster0.9gkt2.mongodb.net/MHJ";
-mongoose.connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
+mongodb.connect()
     .then((result) => app.listen(port, () => console.log(`Listening on port ${port}!`)))
     .catch((err) => { console.log(err) })
 
-mongoose.set('useFindAndModify', false);
+// mongoose.set('useFindAndModify', false);
 
 // MiddleWare:
 app.use(express.urlencoded({ extended: true }));
