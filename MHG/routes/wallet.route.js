@@ -14,6 +14,6 @@ const checkLogin = require('../Middlewares/merchant_auth')
 router.get('/:merchantId',checkLogin.merchantLogin,walletController.merchant_get);
 
 // creditBudget:  Credit Budget Wallet with credit points
-router.post('/:merchantId/credit',checkLogin.merchantLogin,walletController.creditBudget)
+router.post('/:merchantId/creditBudget',checkLogin.merchantLogin,walletController.creditBudget)
 
 module.exports = router;
