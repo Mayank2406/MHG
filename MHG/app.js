@@ -1,7 +1,7 @@
 const express = require('express');
 const config  = require('./config/config'); 
 const mongodb = require('./config/databaseConnection')
-
+const {logger} = require("./logger");
 
 // const mongoose = require('mongoose');
 
@@ -21,8 +21,8 @@ myEmitter.emit('event');
 
 
 mongodb.connect()
-    .then((result) => app.listen(port, () => console.log(`Listening on port ${port}!`)))
-    .catch((err) => { console.log(err) })
+       .then((result) => app.listen(port, () => console.log(`Listening on port ${port}!`)))
+       .catch((err) => { console.log(err) })
 
 // mongoose.set('useFindAndModify', false);
 
